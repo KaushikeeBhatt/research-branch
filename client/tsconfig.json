@@ -1,7 +1,10 @@
 {
-  "compilerOptions": {
+    "compilerOptions": {
+    "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -12,6 +15,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"]
     }

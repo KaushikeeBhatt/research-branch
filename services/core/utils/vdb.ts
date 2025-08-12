@@ -1,5 +1,5 @@
-import OpenAIClient from "../lib/openai-client";
-import { rbIndex } from "../lib/pinecone";
+import OpenAIClient from "../lib/openai-client.js";
+import { rbIndex } from "../lib/pinecone.js";
 
 const vdb = {
   upsert: async (id: string, chunk: string) => {

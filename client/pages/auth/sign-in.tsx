@@ -16,18 +16,25 @@ const SignInPage = () => {
     const payload = Object.fromEntries(formData.entries());
 
     axios
-      .post("http://127.0.0.1:8080/auth/sign-in", payload)
+      .post("http://127.0.0.1:4000/auth/sign-in", payload)
       .then((res) => {
-        if (res.data.jwt) {
-          localStorage.setItem("jwt", res.data.jwt);
+        console.log("Sign in response:", res.data); // Debug log
+        
+        // ✅ FIX: Changed from res.data.jwt to res.data.token
+        if (res.data.token) {
+          localStorage.setItem("token", res.data.token);
           localStorage.setItem("id", res.data.user.id);
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          
+          toast.success("Sign in successful! Redirecting to the Dashboard");
+          router.push("/");
+        } else {
+          toast.error("No token received from server");
         }
-
-        toast.success("Sign in successful! Redirecting to the Dashboard");
-        router.push("/");
         setSigningIn(false);
       })
       .catch((err) => {
+        console.error("Sign in error:", err);
         toast.error("Sign in failed. Please try again.");
         setSigningIn(false);
       });
@@ -41,12 +48,12 @@ const SignInPage = () => {
         <form onSubmit={handleSignIn} className={"space-y-2"}>
           <div className={"w-full flex flex-col gap-1"}>
             <label className={"text-sm font-semibold"}>Email</label>
-            <input type={"email"} name={"email"} className={"py-2 px-4 bg-zinc-800 rounded-md"} />
+            <input type={"email"} name={"email"} required className={"py-2 px-4 bg-zinc-800 rounded-md"} />
           </div>
 
           <div className={"w-full flex flex-col gap-1"}>
             <label className={"text-sm font-semibold"}>Password</label>
-            <input type={"password"} name={"password"} className={"py-2 px-4 bg-zinc-800 rounded-md"} />
+            <input type={"password"} name={"password"} required className={"py-2 px-4 bg-zinc-800 rounded-md"} />
           </div>
 
           <div className={"pt-2"}>

@@ -1,9 +1,9 @@
 import { Idea } from "@prisma/client";
 import { Request, Router } from "express";
-import Prisma from "../../prisma";
-import vdb from "../../utils/vdb";
-import CreateIdeaRequestValidator, { CreateIdeaRequest } from "../../validators/idea/create-idea-request.validator";
-import FeedRequestValidator, { FeedRequest } from "../../validators/idea/feed-request.validator";
+import Prisma from "../../prisma/index.js";
+import vdb from "../../utils/vdb.js";
+import CreateIdeaRequestValidator, { CreateIdeaRequest } from "../../validators/idea/create-idea-request.validator.js";
+import FeedRequestValidator, { FeedRequest } from "../../validators/idea/feed-request.validator.js";
 
 const IdeaRouter = Router();
 
@@ -109,6 +109,7 @@ IdeaRouter.post("/", async (req: Request<null, { idea: Idea } | { error: "Invali
   const idea = await Prisma.idea.create({
     data: {
       title: request.title,
+      content: request.content,
       abstract: request.abstract,
       keywords: {
         connectOrCreate: request.keywords.map((keyword) => ({
@@ -124,7 +125,9 @@ IdeaRouter.post("/", async (req: Request<null, { idea: Idea } | { error: "Invali
     },
   });
 
-  await vdb.upsert(idea.id.toString(), idea.abstract);
+  if (idea.abstract) {
+    await vdb.upsert(idea.id.toString(), idea.abstract);
+  }
 
   return res.status(201).send({ idea });
 });
@@ -146,7 +149,7 @@ IdeaRouter.get("/:id/similar", async (req: Request<{ id: string }, { ideas: Idea
     return res.status(404).send({ error: "Idea not found" });
   }
 
-  const similarIdeaMatches = await vdb.similar(idea.abstract);
+  const similarIdeaMatches = idea.abstract ? await vdb.similar(idea.abstract) : { matches: [] };
   const similarIdeaIds = similarIdeaMatches.matches.map((match) => parseInt(match.id ?? "0"));
 
   let similarIdeas = await Prisma.idea.findMany({

@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
 import { Router } from "express";
 import multer from "multer";
-import Prisma from "../../prisma";
-import gentv from "../../utils/gentv";
+//
+import Prisma from "../../prisma/index.js";
+import gentv from "../../utils/gentv.js";
 
 dotenv.config();
 

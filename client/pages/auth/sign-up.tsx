@@ -16,7 +16,7 @@ const SignUpPage = () => {
     const payload = Object.fromEntries(formData.entries());
 
     axios
-      .post("http://127.0.0.1:8080/auth/sign-up", payload)
+      .post("http://127.0.0.1:4000/auth/sign-up", payload)
       .then((res) => {
         toast.success("Sign up successful! Please sign in to continue.");
         router.push("/auth/sign-in");

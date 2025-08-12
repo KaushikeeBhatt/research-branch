@@ -1,16 +1,16 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import { verifyJWT } from "./middlewares/verify-jwt";
-import AIRouter from "./routes/ai";
-import AuthRouter from "./routes/auth";
-import IdeaRouter from "./routes/idea";
-import UserRouter from "./routes/user";
+import { verifyJWT } from "./middlewares/verify-jwt.js";
+import AIRouter from "./routes/ai/index.js";
+import AuthRouter from "./routes/auth/index.js";
+import IdeaRouter from "./routes/idea/index.js";
+import UserRouter from "./routes/user/index.js";
 
 // Loading Environment Variables
 dotenv.config();
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 

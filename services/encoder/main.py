@@ -20,3 +20,9 @@ async def encode(file: UploadFile = File(...)):
     base64_images = await pdf_to_base64_images(file_bytes)
 
     return {"images": base64_images}
+
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}

@@ -1,7 +1,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import FormData from "form-data";
-import OpenAIClient from "../lib/openai-client";
+import OpenAIClient from "../lib/openai-client.js";
 
 dotenv.config();
 

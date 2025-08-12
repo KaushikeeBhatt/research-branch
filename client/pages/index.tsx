@@ -4,18 +4,19 @@ import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router"; 
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function Home() {
-  const { userId } = useUser();
 
+  const router = useRouter(); 
+  const { userId, loading: userLoading } = useUser(); 
   const [loadingFeed, setLoadingFeed] = useState(true);
   const [creatingIdea, setCreatingIdea] = useState(false);
   const [showingInterest, setShowingInterest] = useState<number | null>(null);
 
-  const [feed, setFeed] = useState<
-    Array<{
+  const [feed, setFeed] = useState<Array<{
       id: number;
       title: string;
       abstract: string;
@@ -34,8 +35,16 @@ export default function Home() {
         createdAt: string;
         updatedAt: string;
       };
-    }>
-  >([]);
+    }>>([]);  
+
+  useEffect(() => {
+    if (!userLoading) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/auth/sign-in");
+      }
+    }
+  }, [userLoading, router]);
 
   const fetchFeed = async () => {
     setLoadingFeed(true);
@@ -48,12 +57,35 @@ export default function Home() {
 
       setFeed(feedResponse.data.ideas);
       setLoadingFeed(false);
-    } catch (error) {
-      toast.error("Failed to fetch feed. Please try again.");
+    } catch (error: any) {
+      // ✅ Better error handling
+      if (error.response?.status === 401) {
+        toast.error("Session expired. Please sign in again.");
+        router.push("/auth/sign-in");
+      } else {
+        toast.error("Failed to fetch feed. Please try again.");
+      }
       setLoadingFeed(false);
     }
   };
 
+
+  useEffect(() => {
+    // ✅ Only fetch feed if authenticated
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchFeed();
+    }
+  }, []);
+
+  // ✅ Show loading while checking auth
+  if (userLoading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-zinc-900">
+        <p className="text-zinc-300">Loading...</p>
+      </div>
+    );
+  }
   const handleCreateIdea = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
 

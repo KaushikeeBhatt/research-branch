@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const CreateIdeaRequestValidator = z.object({
   title: z.string(),
+  content: z.string(),
   abstract: z.string().max(2048),
   keywords: z.array(z.string()).max(10),
 });
